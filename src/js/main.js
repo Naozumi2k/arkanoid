@@ -10,23 +10,31 @@ import {
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-canvas.width = 600;
-canvas.height = 400;
+canvas.width = 800;
+canvas.height = 600;
 
-var ball_speed = 3;
-var stick_speed = 7;
+const BALL_SPEED = 3;
+const STICK_SPEED = 7;
+const BRICK_ROWS = 3;
+const BRICK_COLS = 6;
+const BRICK_OFFSET = 40;
 var keys = {};
 var bricks = [];
 var pause = true;
 var render, ball, stick;
 
 function create_game() {
-  ball = new Ball({ canvas: canvas, speed: ball_speed });
-  stick = new Stick({ canvas: canvas, speed: stick_speed });
+  ball = new Ball({ canvas: canvas, speed: BALL_SPEED });
+  stick = new Stick({ canvas: canvas, speed: STICK_SPEED });
   bricks = [];
-  for (var row = 0; row < 3; row++) {
-    for (var col = 0; col < 6; col++) {
-      bricks.push(new Brick([(canvas.width / 6) * col + 15, 35 * row + 15]));
+  for (var row = 0; row < BRICK_ROWS; row++) {
+    for (var col = 0; col < BRICK_COLS; col++) {
+      bricks.push(
+        new Brick([
+          (canvas.width / BRICK_COLS) * col + 15,
+          BRICK_OFFSET * row + 15,
+        ])
+      );
     }
   }
 
@@ -38,17 +46,17 @@ function update_frame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   render.draw_all();
 
-  if (!pause && "ArrowLeft" in keys) {
+  if (!pause && 37 in keys) {
     // кнопка влево
     stick.pos[0] -= stick.speed;
-    if (stick.pos[0] < stick.padding[0]) stick.pos[0] = stick.padding[0];
-  } else if (!pause && "ArrowRight" in keys) {
+    if (stick.pos[0] < stick.offset) stick.pos[0] = stick.offset;
+  } else if (!pause && 39 in keys) {
     // кнопка вправо
     stick.pos[0] += stick.speed;
-    if (stick.pos[0] > canvas.width - stick.size[0] - stick.padding[0])
-      stick.pos[0] = canvas.width - stick.size[0] - stick.padding[0];
-  } else if (pause && "r" in keys) {
-    // кнопка r - сброс игры
+    if (stick.pos[0] > canvas.width - stick.size[0] - stick.offset)
+      stick.pos[0] = canvas.width - stick.size[0] - stick.offset;
+  } else if (pause && 32 in keys) {
+    // кнопка space - сброс игры
     create_game();
   }
 
@@ -68,12 +76,12 @@ function main_loop() {
 }
 
 window.addEventListener("keyup", (event) => {
-  delete keys[event.key];
+  delete keys[event.keyCode];
   event.preventDefault();
 });
 
 window.addEventListener("keydown", (event) => {
-  keys[event.key] = true;
+  keys[event.keyCode] = true;
   event.preventDefault();
 });
 

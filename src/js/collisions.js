@@ -1,8 +1,7 @@
 function proceed_stick_collisions(stick, ball, canvas) {
   if (
-    ball.pos[0] + ball.size >= stick.pos[0] - stick.padding[0] &&
-    ball.pos[0] + ball.size <=
-      stick.pos[0] + stick.size[0] + stick.padding[0] &&
+    ball.pos[0] + ball.size >= stick.pos[0] - stick.offset &&
+    ball.pos[0] + ball.size <= stick.pos[0] + stick.size[0] + stick.offset &&
     ball.pos[1] + ball.size >= stick.pos[1]
   ) {
     // отскок от палки
@@ -21,8 +20,6 @@ function proceed_stick_collisions(stick, ball, canvas) {
     ball.speed_x = 0;
     ball.speed_y = 0;
     return false;
-    // render.draw_text("YOU DIED");
-    // pause = true;
   }
 
   return true;
